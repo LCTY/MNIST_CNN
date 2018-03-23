@@ -14,6 +14,8 @@ def mul(np.ndarray[DTYPE_t, ndim=2] a, np.ndarray[DTYPE_t, ndim=2] b, int add_bi
     # cdef DTYPE_t ma = 0, mi = 10
     print('row ={}\t col = {} ashape={} mul={}'.format(row_len,col_len,a.shape[1],row_len*col_len*a.shape[1]))
     cdef DTYPE_t tmp
+    cdef DTYPE_t ma=0
+    cdef DTYPE_t mi=0
     cdef np.ndarray[DTYPE_t, ndim=2] product = np.zeros([row_len, col_len])
     with nogil:
         for row in prange(row_len, schedule='static'):
@@ -23,5 +25,7 @@ def mul(np.ndarray[DTYPE_t, ndim=2] a, np.ndarray[DTYPE_t, ndim=2] b, int add_bi
                     product[row, col] = floor((product[row, col]
                                                   + floor(tmp * (2**mul_bit)) / (2**mul_bit))\
                                                     * (2**add_bit)) / (2**add_bit)
+                    ma = max(product[row, col], ma)
+                    mi = min(product[row, col], mi)
 
-    return product
+    return product,ma,mi

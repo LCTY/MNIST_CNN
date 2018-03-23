@@ -1,19 +1,15 @@
 import numpy as np
-import hipsternet.utils as util
-import hipsternet.constant as c
-import hipsternet.regularization as reg
-from hipsternet.im2col import *
-from ops.mul import mul
+import hipsternet.hipsternet.utils as util
+import hipsternet.hipsternet.constant as c
+import hipsternet.hipsternet.regularization as reg
+from hipsternet.hipsternet.im2col import *
+from hipsternet.ops.mul import mul
 
 
 def fc_forward(X, W, b, add_bit=0, mul_bit=0):
-    # X, W = X.astype(np.float64), W.astype(np.float64)
-    # out = mul(X, W, add_bit, mul_bit) + b
-    # np.savetxt('X1.txt', X.flatten())
-    # np.savetxt('W1.txt', W.flatten())
-    # np.savetxt('b1.txt', b.flatten())
-    out = np.dot(X, W) + b
-    np.savetxt('out1.txt', out.flatten())
+    X, W = X.astype(np.float64), W.astype(np.float64)
+    out = mul(X, W, add_bit, mul_bit) + b
+    # out = np.dot(X, W) + b
     cache = (W, X)
     return out, cache
 
@@ -143,12 +139,12 @@ def conv_forward(X, W, b, stride=1, padding=1, add_bit=0, mul_bit=0):
     W_col = W.reshape(n_filters, -1)
 
     # out = W_col @ X_col + b
-    out = np.dot(W_col, X_col) + b
-    # X_col, W_col = X_col.astype(np.float64), W_col.astype(np.float64)
+    # out = np.dot(W_col, X_col) + b
+    X_col, W_col = X_col.astype(np.float64), W_col.astype(np.float64)
     # print('muling')
-    # out = mul(W_col, X_col, add_bit, mul_bit) + b
+    out = mul(W_col, X_col, add_bit, mul_bit) + b
     # print('mul done')
-    print(out.shape)
+    # print(out.shape)
     out = out.reshape(n_filters, h_out, w_out, n_x)
     out = out.transpose(3, 0, 1, 2)
 

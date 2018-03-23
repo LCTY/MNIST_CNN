@@ -1,8 +1,8 @@
 import numpy as np
-import hipsternet.loss as loss_fun
-import hipsternet.layer as l
-import hipsternet.regularization as reg
-import hipsternet.utils as util
+import hipsternet.hipsternet.loss as loss_fun
+import hipsternet.hipsternet.layer as l
+import hipsternet.hipsternet.regularization as reg
+import hipsternet.hipsternet.utils as util
 
 
 class NeuralNet(object):
@@ -201,54 +201,45 @@ class ConvNet(NeuralNet):
         np.save('b3', self.model['b3'])
 
     def forward(self, X, train=False):
-        # self.model['W_conv1'] = np.floor(self.model['W_conv1'] * (2 ** 7)) / (2 ** 7)
-        # self.model['b_conv1'] = np.floor(self.model['b_conv1'] * (2 ** 7)) / (2 ** 7)
-        # self.model['W_conv2'] = np.floor(self.model['W_conv2'] * (2 ** 7)) / (2 ** 7)
-        # self.model['b_conv2'] = np.floor(self.model['b_conv2'] * (2 ** 7)) / (2 ** 7)
-        # self.model['W_fc1']   = np.floor(self.model['W_fc1'] * (2 ** 7)) / (2 ** 7)
-        # self.model['b_fc1']   = np.floor(self.model['b_fc1'] * (2 ** 7)) / (2 ** 7)
-        # self.model['W_fc2']   = np.floor(self.model['W_fc2'] * (2 ** 7)) / (2 ** 7)
-        # self.model['b_fc2']   = np.floor(self.model['b_fc2'] * (2 ** 7)) / (2 ** 7)
+        self.model['W_conv1'] = np.floor(self.model['W_conv1'] * (2 ** 10)) / (2 ** 10)
+        self.model['b_conv1'] = np.floor(self.model['b_conv1'] * (2 ** 10)) / (2 ** 10)
+        self.model['W_conv2'] = np.floor(self.model['W_conv2'] * (2 ** 10)) / (2 ** 10)
+        self.model['b_conv2'] = np.floor(self.model['b_conv2'] * (2 ** 10)) / (2 ** 10)
+        self.model['W_fc1']   = np.floor(self.model['W_fc1'] * (2 ** 10)) / (2 ** 10)
+        self.model['b_fc1']   = np.floor(self.model['b_fc1'] * (2 ** 10)) / (2 ** 10)
+        self.model['W_fc2']   = np.floor(self.model['W_fc2'] * (2 ** 10)) / (2 ** 10)
+        self.model['b_fc2']   = np.floor(self.model['b_fc2'] * (2 ** 10)) / (2 ** 10)
 
 
         # Conv-1
         h_conv1, h_conv1_cache = l.conv_forward(X, self.model['W_conv1'], self.model['b_conv1'],add_bit=self.conv_1,mul_bit=self.conv_1)
-        # print(h_conv1.max(), h_conv1.min())
         h_conv1, nl_cache1 = l.relu_forward(h_conv1)
-
-        # print("conv_1 finish")
+        print("conv_1 finish")
 
         # Pool-1
         h_pool1, h_pool1_cache = l.maxpool_forward(h_conv1)
-        # print("maxpool_1 finish")
+        print("maxpool_1 finish")
 
         # Conv-2
         h_conv2, h_conv2_cache = l.conv_forward(h_pool1, self.model['W_conv2'], self.model['b_conv2'],add_bit=self.conv_2,mul_bit=self.conv_2)
-        # print(h_conv2.max(), h_conv2.min())
         h_conv2, n2_cache2 = l.relu_forward(h_conv2)
-
-        # print("conv_2 finish")
+        print("conv_2 finish")
 
         # Pool-2
         h_pool2, h_pool2_cache = l.maxpool_forward(h_conv2)
-        # print("maxpool_2 finish")
+        print("maxpool_2 finish")
 
         h_pool2 = np.transpose(h_pool2, [0, 2, 3, 1])
         h_pool2_flat = h_pool2.ravel().reshape(X.shape[0], -1)  # 先攤平後分成 batch_size 組
         # FC-7
         h_fc1, h_fc1_cache = l.fc_forward(h_pool2_flat, self.model['W_fc1'], self.model['b_fc1'],add_bit=self.FC_1,mul_bit=self.FC_1)
-        # print("FC_1 finish")
-        # print(h_fc1.max(), h_fc1.min())
-        print("HI")
-        input()
+        print("FC_1 finish")
 
         h_fc1, n3_cache3 = l.relu_forward(h_fc1)
 
 
         # Softmax
         score, score_cache = l.fc_forward(h_fc1, self.model['W_fc2'], self.model['b_fc2'],add_bit=self.FC_2,mul_bit=self.FC_2)
-        # print(score)
-        # print(score.max(), score.min())
         print("FC_2 finish")
 
         return score, (X, h_conv1_cache, nl_cache1, h_pool1_cache, h_conv2_cache, n2_cache2, h_pool2_cache, h_fc1_cache, n3_cache3, score_cache)
@@ -309,14 +300,14 @@ class ConvNet(NeuralNet):
 
         # for 2conv
         self.model = dict(
-            W_conv1=np.load("data/model_1/weight/hipsternet/w_conv1.npy"),
-            b_conv1=np.load("data/model_1/weight/hipsternet/b_conv1.npy"),
-            W_conv2=np.load("data/model_1/weight/hipsternet/w_conv2.npy"),
-            b_conv2=np.load("data/model_1/weight/hipsternet/b_conv2.npy"),
-            W_fc1  =np.load("data/model_1/weight/hipsternet/w_fc1.npy"),
-            b_fc1  =np.load("data/model_1/weight/hipsternet/b_fc1.npy"),
-            W_fc2  =np.load("data/model_1/weight/hipsternet/w_fc2.npy"),
-            b_fc2  =np.load("data/model_1/weight/hipsternet/b_fc2.npy")
+            W_conv1=np.load("data/model_4/weight/hipsternet/w_conv1.npy"),
+            b_conv1=np.load("data/model_4/weight/hipsternet/b_conv1.npy"),
+            W_conv2=np.load("data/model_4/weight/hipsternet/w_conv2.npy"),
+            b_conv2=np.load("data/model_4/weight/hipsternet/b_conv2.npy"),
+            W_fc1  =np.load("data/model_4/weight/hipsternet/w_fc1.npy"),
+            b_fc1  =np.load("data/model_4/weight/hipsternet/b_fc1.npy"),
+            W_fc2  =np.load("data/model_4/weight/hipsternet/w_fc2.npy"),
+            b_fc2  =np.load("data/model_4/weight/hipsternet/b_fc2.npy")
         )
 
 

@@ -1,7 +1,8 @@
 import numpy as np
-from tensorflow.examples.tutorials.mnist import input_data
-import hipsternet.neuralnet_2conv as nn
-from hipsternet.solver import *
+# from tensorflow.examples.tutorials.mnist import input_data
+import hipsternet.hipsternet.input_data as input_data
+import hipsternet.hipsternet.neuralnet_3conv as nn
+from hipsternet.hipsternet.solver import *
 import sys
 
 n_iter = 1
@@ -37,7 +38,8 @@ if __name__ == '__main__':
     X_test, y_test = mnist.test.images, mnist.test.labels
     X_test = X_test.astype(np.float64)
     y_test = y_test.astype(np.float64)
-    X_test, y_test = mnist.test.images[0:1], mnist.test.labels[0:1]
+    # X_test, y_test = mnist.test.images[0:512], mnist.test.labels[0:512]
+    X_test = np.floor(X_test * (2 ** 4)) / (2 ** 4)
 
     M, D, C = X_train.shape[0], X_train.shape[1], y_train.max() + 1
 
@@ -63,19 +65,19 @@ if __name__ == '__main__':
 
     print('Experimenting on {}'.format(solver))
 
-    bit_number=32
-    for k in range(n_experiment):
-        print('Experiment-{}'.format(k + 1))
+    # bit_number=32
+    for k in range(1, 2):
+        print('k: %d' % k)
 
         # Reset model
         if net_type == 'ff':
             net = nn.FeedForwardNet(D, C, H=128, lam=reg, p_dropout=p_dropout, loss=loss, nonlin=nonlin)
         elif net_type == 'cnn':
             net = nn.ConvNet(10, C, H=128,
-                             conv_1=bit_number,
-                             conv_2=bit_number,
-                             FC_1=bit_number,
-                             FC_2=bit_number)
+                             conv_1=12,
+                             conv_2=12,
+                             FC_1=14,
+                             FC_2=14)
 
         # net = solver_fun(
         #     net, X_train, y_train, val_set=(X_val, y_val), mb_size=mb_size, alpha=alpha,
@@ -85,5 +87,5 @@ if __name__ == '__main__':
         # net.save_weight()
 
         y_pred = net.predict(X_test)
-        accs[k] = np.mean(y_pred == y_test)
-    print('Mean accuracy: {:.8f}, std: {:.8f}'.format(accs.mean(), accs.std()))
+        accs = np.mean(y_pred == y_test)
+        print('Mean accuracy: {:.8f}' .format(accs))
