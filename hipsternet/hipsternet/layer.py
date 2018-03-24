@@ -8,8 +8,13 @@ from hipsternet.ops.mul import mul
 
 def fc_forward(X, W, b, add_bit=0, mul_bit=0):
     X, W = X.astype(np.float64), W.astype(np.float64)
-    out = mul(X, W, add_bit, mul_bit) + b
+    out,max_mul,min_mul,max_add,min_add = mul(X, W, add_bit, mul_bit)
+    out += b
     # out = np.dot(X, W) + b
+    print(max_mul)
+    print(min_mul)
+    print(max_add)
+    print(min_add)
     cache = (W, X)
     return out, cache
 
@@ -141,9 +146,14 @@ def conv_forward(X, W, b, stride=1, padding=1, add_bit=0, mul_bit=0):
     # out = W_col @ X_col + b
     # out = np.dot(W_col, X_col) + b
     X_col, W_col = X_col.astype(np.float64), W_col.astype(np.float64)
-    # print('muling')
-    out = mul(W_col, X_col, add_bit, mul_bit) + b
-    # print('mul done')
+    print('muling')
+    out,max_mul,min_mul,max_add,min_add = mul(W_col, X_col, add_bit, mul_bit)
+    out += b
+    print('mul done')
+    print(max_mul)
+    print(min_mul)
+    print(max_add)
+    print(min_add)
     # print(out.shape)
     out = out.reshape(n_filters, h_out, w_out, n_x)
     out = out.transpose(3, 0, 1, 2)
