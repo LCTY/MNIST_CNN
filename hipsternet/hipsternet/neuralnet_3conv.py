@@ -213,28 +213,27 @@ class ConvNet(NeuralNet):
 
         # Conv-1
         h_conv1, h_conv1_cache = l.conv_forward(X, self.model['W_conv1'], self.model['b_conv1'],add_bit=self.conv_1,mul_bit=self.conv_1)
-        print('max of conv1:{}'.format(np.max(np.abs(h_conv1))))
+        print('max of conv1:{}'.format(np.max((h_conv1))))
         print('min of conv1:{}'.format(np.min(h_conv1)))
         h_conv1, nl_cache1 = l.relu_forward(h_conv1)
         print("conv_1 finish")
 
         # Pool-1
         h_pool1, h_pool1_cache = l.maxpool_forward(h_conv1)
-        print('max of maxpool1:{}'.format(np.max(np.abs(h_pool1))))
+        print('max of maxpool1:{}'.format(np.max((h_pool1))))
         print('min of maxpool1:{}'.format(np.min(h_pool1)))
         print("maxpool_1 finish")
 
         # Conv-2
         h_conv2, h_conv2_cache = l.conv_forward(h_pool1, self.model['W_conv2'], self.model['b_conv2'],add_bit=self.conv_2,mul_bit=self.conv_2)
-        print('max of conv2:{}'.format(np.max(np.abs(h_conv2))))
+        print('max of conv2:{}'.format(np.max((h_conv2))))
         print('min of conv2:{}'.format(np.min(h_conv2)))
         h_conv2, n2_cache2 = l.relu_forward(h_conv2)
         print("conv_2 finish")
 
         # Pool-2
         h_pool2, h_pool2_cache = l.maxpool_forward(h_conv2)
-        print('max of maxpool2:{}'.format(np.max(np.abs(h_pool2))))
-        print('min of maxpool2:{}'.format(np.min(h_pool2)))
+        print('max of maxpool2:{}'.format(np.max((h_pool2))))
         print("maxpool_2 finish")
 
         # Padding
@@ -244,15 +243,14 @@ class ConvNet(NeuralNet):
 
         # Pool-3
         h_pool3, h_pool3_cache = l.maxpool_forward(h_pool2)
-        print('max of maxpool3:{}'.format(np.max(np.abs(h_pool3))))
-        print('min of maxpool3:{}'.format(np.min(h_pool3)))
+        print('max of maxpool3:{}'.format(np.max((h_pool3))))
         print("maxpool_3 finish")
 
         h_pool3 = np.transpose(h_pool3, [0, 2, 3, 1])
         h_pool2_flat = h_pool3.ravel().reshape(X.shape[0], -1)  # 先攤平後分成 batch_size 組
         # FC-7
         h_fc1, h_fc1_cache = l.fc_forward(h_pool2_flat, self.model['W_fc1'], self.model['b_fc1'],add_bit=self.FC_1,mul_bit=self.FC_1)
-        print('max of FC1:{}'.format(np.max(np.abs(h_fc1))))
+        print('max of FC1:{}'.format(np.max((h_fc1))))
         print('min of FC1:{}'.format(np.min(h_fc1)))
         print("FC_1 finish")
 
@@ -261,7 +259,7 @@ class ConvNet(NeuralNet):
 
         # Softmax
         score, score_cache = l.fc_forward(h_fc1, self.model['W_fc2'], self.model['b_fc2'],add_bit=self.FC_2,mul_bit=self.FC_2)
-        print('max of FC2:{}'.format(np.max(np.abs(score))))
+        print('max of FC2:{}'.format(np.max((score))))
         print('min of FC2:{}'.format(np.min(score)))
         print("FC_2 finish")
 
